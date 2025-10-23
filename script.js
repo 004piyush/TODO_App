@@ -6,16 +6,16 @@ const list = document.getElementById('todo-list')
 
 // load save todos from local storage
 const saved = localStorage.getItem('todos')
-const todos = saved ? JSON.parse(saved) : [];
+const todos = saved ? JSON.parse(saved) : [];  // todos is array
 
-function saveTodo(){
+function saveTodos(){
     // save current todos array to localStorage
     localStorage.setItem('todos',JSON.stringify(todos))
 }
 
 //Create a dom node for a todo object and append it to the list 
 
-function createTodoNode(todo, index) {
+function createTodoNode(todo, index) {     // todo is an object
     const li = document.createElement('li');
 
     // checkbox to toggle completion
@@ -36,6 +36,19 @@ function createTodoNode(todo, index) {
 
         textSpan.addEventListener("dblclick",()=>{
             const newText = prompt("Edit todo",todo.text)
+            if(newText !== null){
+                todo.text = newText.trim()
+                textSpan.textContent = todo.text
+                saveTodos()
+            }
+        })
+
+        const delBtn = document.createElement('button')
+        delBtn.textContent = "Delete"
+        delBtn.addEventListener('click', () =>{
+            todos.splice(index,1)
+            Render()
+            saveTodos()
         })
 
     }
