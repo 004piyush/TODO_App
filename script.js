@@ -2,7 +2,7 @@
 
 const input = document.getElementById('todo-input')
 const addBtn = document.getElementById('add-btn')
-const list = document.getElementById('todo-list')
+const list = document.getElementById('Todo-list')
 
 // load save todos from local storage
 const saved = localStorage.getItem('todos')
@@ -24,47 +24,65 @@ function createTodoNode(todo, index) {     // todo is an object
     checkbox.checked = !!todo.completed;
     checkbox.addEventListener("change", () => {
         todo.completed = checkbox.checked;
-
-        
-    })
+        saveTodos();
+        render();  
+    });
 
     const textSpan = document.createElement('span')
     textSpan.textContent = todo.text
     textSpan.style.margin = "10px"
     if(todo.completed){
         textSpan.style.textDecoration = 'line-through'
-
-        textSpan.addEventListener("dblclick",()=>{
+    }
+    textSpan.addEventListener("dblclick",()=>{
             const newText = prompt("Edit todo",todo.text)
             if(newText !== null){
                 todo.text = newText.trim()
                 textSpan.textContent = todo.text
                 saveTodos()
             }
-        })
+    })
 
-        const delBtn = document.createElement('button')
-        delBtn.textContent = "Delete"
-        delBtn.addEventListener('click', () =>{
+    const delBtn = document.createElement('button')
+    delBtn.textContent = "Delete"
+    delBtn.addEventListener('click', () =>{
             todos.splice(index,1)
-            Render()
+            render()
             saveTodos()
-        })
+    })
 
-    }
+    li.appendChild(checkbox)
+    li.appendChild(textSpan)
+    li.appendChild(delBtn)
+
+    return li
 
 }
 
 //Render the whole todo list from todos array
-function Render(){
+function render(){
 
-    list.innerHTML = ''
+    list.innerHTML = ' '
 
     todos.forEach((todo,index) => {
         const node = createTodoNode(todo,index)
         list.appendChild(node)
     });
+}
 
+function addTodos(){
 
+    const text = input.value.trim()
+    if(!text){
+        return
+    }
+
+    todos.push({text,completed: false})
+    input.value = ''
+    render()
+    saveTodos()
 
 }
+
+addBtn.addEventListener("click",addTodos)
+render()
